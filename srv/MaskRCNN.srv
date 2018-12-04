@@ -1,0 +1,3 @@
+sensor_msgs/Image image
+---
+mask_rcnn_ros/RectArray detection

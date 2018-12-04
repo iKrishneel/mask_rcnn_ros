@@ -1,0 +1,17 @@
+numpy
+scipy
+Pillow
+cython
+matplotlib
+scikit-image
+tensorflow-gpu>=1.3.0
+keras==2.1.6
+opencv-python
+h5py
+imgaug
+pycocotools==2.0.0
+IPython[all]
+rospkg
+catkin_pkg
+tqdm
+gdown
