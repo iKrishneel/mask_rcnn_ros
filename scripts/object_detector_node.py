@@ -18,8 +18,8 @@ from detector import MRCNNDetector
 
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Point32, PolygonStamped
-from object_detector.msg import RectArray
-from object_detector.srv import *
+from mask_rcnn_ros.msg import RectArray
+from mask_rcnn_ros.srv import *
 
 class ObjectDetector(MRCNNDetector):
 
