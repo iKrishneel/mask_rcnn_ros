@@ -78,3 +78,25 @@ The following arguments can be set on the `roslaunch` above.
 - `model`: path to the training keras model file. The model is with `.h5` extension.
 - `class_labels`: text file containing the mapping of the class label with the class name
 
+## Training
+---
+The Mask RCNN can be trained as follows on custom dataset.
+
+##### Dataset Loading
+Modify the [dataloader script](https://github.com/iKrishneel/mask_rcnn_ros/blob/master/scripts/train/custom_dataloader.py) based on your dataset format or use the COCO dataloader. The current dataset loader in this package is different from the COCO loader that comes with the Mask RCNN. It is useful when training Mask RCNN on custom data. 
+Current loader assumes that the dataset directory contains two folders and a textfile:
+- `image/` which contains all the images (eg. `image_0001.jpg`)
+- `label` contains folders (named after the image name eg. `image_0001/` corresponding to each image. Inside the subfolder `image_0001` are mask images of target objects for learning (eg `1.png, 4.png`. The name of the mask image in the subfolder corresponds to the **class label** of the objects)
+- `class.txt` - textfile contains the class names corresponding to each label on a new line(eg: apple 1 [separated by single white space])
+
+##### Hyperparameter Tunning
+Before starting the training, you will need to tune some hyperparameters.
+
+1. `NUM_CLASSES` [#L53](https://github.com/iKrishneel/mask_rcnn_ros/blob/master/scripts/train/mask_rcnn_trainer.py#L53) in the dataset
+2. `Learning Params` [#44](https://github.com/iKrishneel/mask_rcnn_ros/blob/master/scripts/train/mask_rcnn_trainer.py#L144) set learning parameters like `epochs`, `layers` [which layers of ReNet to train] and `LEARNING_RATE` (if necessary)
+
+##### Training Command
+
+```bash
+$ python mask_rcnn_trainer.py --dataset <path_to_dataset> --model <path_to_model_used_for_initialization>  train
+````

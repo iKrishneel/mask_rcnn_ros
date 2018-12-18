@@ -50,7 +50,7 @@ class CocoConfig(Config):
     # GPU_COUNT = 8
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 6  # COCO has 80 classes
+    NUM_CLASSES = 1 + 32  # COCO has 80 classes
 
     USE_MINI_MASK = True
 
@@ -143,8 +143,8 @@ if __name__ == '__main__':
         print("Training network heads")
         model.train(dataset_train, dataset_val,
                     learning_rate=config.LEARNING_RATE,
-                    epochs=40,
-                    layers='heads',
+                    epochs=100,
+                    layers='4+',
                     augmentation=augmentation)
 
         # # Training - Stage 2

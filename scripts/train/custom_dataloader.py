@@ -97,7 +97,11 @@ class Dataloader(object):
         self.__net_size = (800, 800)
 
         self.num_classes = len(class_label_dict) + 1
-        self.source_class_ids = {'': [0], 'handheld_objects': np.arange(0, len(lines)+1)}
+        self.source_class_ids = np.arange(0, len(lines)+1)
+
+        self.image_info = {}
+        for i in range(len(self.__dataset)):
+            self.image_info[i] = {'source': np.arange(0, len(lines)+1)}
 
         self.__fetched_data = None
         self.__fetch_counter = 0
