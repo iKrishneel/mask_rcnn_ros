@@ -41,12 +41,14 @@ class ObjectDetector(MRCNNDetector):
         lines = [line.rstrip('\n') for line in open(self.__class_labels)]
 
         self.__objects_meta = {}
+        self.__labels = ['_']
         for line in lines:
             object_name, object_label = line.split()
             object_label = int(object_label)
             #! color is for visualization
             color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
             self.__objects_meta[object_label] = [object_name, color]
+            self.__labels.append(object_name)
 
         self.pub_detection = rospy.Publisher('/object_detector/rects', RectArray, queue_size=1)
 
@@ -57,7 +59,6 @@ class ObjectDetector(MRCNNDetector):
             rospy.loginfo('RUNNING MASK-RCNN DETECTOR AS SERVICE')
             self.service()
             
-        
     def run_detector(self, image, header=None):
 
         result = self.detect(image)
@@ -84,7 +85,6 @@ class ObjectDetector(MRCNNDetector):
                 rect_array.labels.append(int(class_ids[m]))
                 rect_array.likelihood.append(scores[m])
                 rect_array.names.append(object_name)
-                # rect_array.image.append(masks[:,:,m])
 
                 im_mask = np.zeros(image.shape[:2], np.int64)
                 im_mask[masks[:,:,m]==True] = np.int64(class_ids[m])
@@ -94,29 +94,21 @@ class ObjectDetector(MRCNNDetector):
                     for i in range(im_mask.shape[1]):
                         rect_array.indices.append(im_mask[j, i])
 
-                if self.__debug:
-                    cv.putText(image, object_name, (x1, y1),
-                               cv.FONT_HERSHEY_PLAIN, 1.5, (255, 0, 0), 2, cv.LINE_8)
-                    cv.rectangle(image, (x1, y1), (x2, y2), color, 3)
-                    image[masks[:,:,m]] = color
-
-        """
-        for j in range(im_mask.shape[0]):
-            for i in range(im_mask.shape[1]):
-                rect_array.indices.append(im_mask[j, i])
-        """
-            
         if self.__debug:
+            im_plot = self.plot_detection(image, result, self.__labels)
+            cv_result = np.zeros(shape=im_plot.shape, dtype=np.uint8)
+            cv.convertScaleAbs(im_plot, cv_result)
+            
             print ('Scores: {} {} {}'.format(scores, class_ids, image.shape))
             wname = 'image'
             cv.namedWindow(wname, cv.WINDOW_NORMAL)
-            cv.imshow(wname, image)
+            cv.imshow(wname, cv_result)
             if cv.waitKey(3) == 27:
                 cv.destroyAllWindows()
                 sys.exit()
 
         return rect_array
-            
+
     def convert_to_cv_image(self, image_msg):
 
         if image_msg is None:
@@ -144,7 +136,6 @@ class ObjectDetector(MRCNNDetector):
             cv_img = cv.cvtColor(cv_img, cv.COLOR_RGB2BGR)
 
         return cv_img
-
 
     def callback(self, image_msg):
         

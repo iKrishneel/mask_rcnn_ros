@@ -12,6 +12,7 @@ sys.path.append(ROOT_DIR)
 
 from mrcnn.config import Config
 from mrcnn import model as modellib, utils
+from mrcnn import visualize
 
 class MRCNNDetector(object):
     def __init__(self, model_path, num_classes, logs=None):
@@ -54,3 +55,23 @@ class MRCNNDetector(object):
             print ('Prediction time: {}'.format(t_pred))
 
         return result
+
+    def plot_detection(self, image, result, labels):
+        from matplotlib.backends.backend_agg import FigureCanvasAgg
+        from matplotlib.figure import Figure 
+        
+        figure = Figure()
+        canvas = FigureCanvasAgg(figure)
+        axes = figure.gca()
+
+        colors = visualize.random_colors(len(labels))
+        visualize.display_instances(image, result['rois'], result['masks'], result['class_ids'],
+                                    labels, result['scores'], ax=axes, colors=colors)
+
+        figure.tight_layout()
+        canvas.draw()
+        r = np.fromstring(canvas.tostring_rgb(), dtype='uint8')
+
+        x, y, w, h = figure.bbox.bounds
+        r = r.reshape((int(h), int(w), 3))
+        return r
