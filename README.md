@@ -51,7 +51,7 @@ $ git submodule update --init
 ------------
 > The package is a ROS node and can be complied using the catkin tools
 ```bash
-  $ catkin build jsk_hsr_wrs
+  $ catkin build mask_rcnn_ros
   $ source $HOME/.bashrc
 ```
 
