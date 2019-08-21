@@ -42,7 +42,7 @@ $ pip install -r requirements.txt
 > Clone the package to the ROS workspace using git tools
 ```bash
 $ git clone https://github.com/iKrishneel/mask_rcnn_ros.git
-$ cd jsk_hsr_wrs
+$ cd mask_rcnn_ros
 $ git pull --all
 $ git submodule update --init
 ```
